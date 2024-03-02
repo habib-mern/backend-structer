@@ -14,5 +14,9 @@ router.post('/user-profile-update',AuthVerifyMiddleware, userController.UpdatePr
 router.post('/create-todo',AuthVerifyMiddleware, todoController.CreateTodo)
 router.get('/update-todo-status/:id/:status',AuthVerifyMiddleware, todoController.UpdateTodoStatus)
 router.get('/delete-todo/:id',AuthVerifyMiddleware, todoController.DeleteTodo)
+router.get('/todo-list-by-status/:status',AuthVerifyMiddleware, todoController.TodoListByStatus)
+router.get('/todo-count-by-status',AuthVerifyMiddleware, todoController.TodoCountByStatus)
 //Todo Api End
+
+
 module.exports = router

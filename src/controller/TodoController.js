@@ -47,3 +47,44 @@ exports.DeleteTodo = async(req,res)=>{
     }
 } 
 //Delete ToDo End
+
+//todo list by status Start
+exports.TodoListByStatus = async(req, res) =>{
+    try{
+        let status = req.params.status
+        let email = req.headers.email
+
+        const result = await TodoModel.aggregate(
+            [
+                {$match:{status:status,email:email}},
+                {$project:{_id:1,title:1,description:1,status:1,createDate:{$dateToString:{format:"%d-%m-%Y", date:"$createDate"}}}}
+            ]
+        )
+
+        res.status(201).json({status: "sucess", data: result})
+    }
+    catch(error){
+        res.status(400).json({status: "fail", message: error.message})
+    }
+}
+//todo list by status End
+
+//todo count Start
+exports.TodoCountByStatus = async(req,res)=>{
+    try{
+        let email = req.headers.email
+
+        const result = await TodoModel.aggregate(
+            [
+                {$match:{email:email}},
+                {$group:{_id:"$status",total:{$count:{}}}}
+            ]
+        )
+
+        res.status(201).json({status: "sucess", data: result})
+    }
+    catch(error){
+        res.status(400).json({status: "fail", message: error.message})
+    }
+}
+//todo count End
