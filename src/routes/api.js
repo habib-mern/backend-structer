@@ -9,8 +9,10 @@ router.post('/registraion', userController.Registraion)
 router.get('/login', userController.Login)
 router.post('/user-profile-update',AuthVerifyMiddleware, userController.UpdateProfile)
 router.get('/profile-info',AuthVerifyMiddleware, userController.ProfileInfo)
-
-router.post('/email-verif/:email', userController.EmailVerify)
+//OTP Api
+router.post('/email-verify/:email', userController.EmailVerify)
+router.get('/otp-verify/:email/:otp', userController.OtpVerify)
+router.post('/reset-password', userController.ResetPassword)
 
 //User Api End
 

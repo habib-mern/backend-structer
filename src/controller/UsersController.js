@@ -27,15 +27,11 @@ exports.Login = async (req, res) => {
         const reqBody = req.body;
         let user = await UserModel.findOne({email: reqBody.email});
         if (!user) {
-            return res
-                .status(400)
-                .json({status: "fail", message: "User not found"})
+            return res.status(400).json({status: "fail", data: "User not found"})
         }
         if (user.password !== reqBody.password) {
 
-            return res
-                .status(400)
-                .json({status: "fail", message: "Invalide Password"})
+            return res.status(400).json({status: "fail", data: "Invalide Password"})
         } else {
 
             let payload = {
@@ -45,14 +41,10 @@ exports.Login = async (req, res) => {
             let token = jwt.sign(payload, '12345')
             //Projection
             const responseData = {email:user['email'], firstName:user['firstName'], lastName: user['lastName'], profilePicture: user['profilePicture']}
-            res
-                .status(201)
-                .json({status: "sucess", data: responseData, token: token})
+            res.status(201).json({status: "sucess", data: responseData, token: token})
         }
     } catch (error) {
-        res
-            .status(400)
-            .json({status: "fail", message: error.message})
+        res.status(400).json({status: "fail", data: error.message})
     }
 }
 //Login End
@@ -67,7 +59,7 @@ exports.ProfileInfo = async(req, res)=>{
         res.status(200).json({status:"Sucess", data: responseData})
 
     } catch (error) {
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(400).json({status: "fail", data: error.message})
     }
 }
 //Profile Info End
@@ -83,7 +75,7 @@ exports.UpdateProfile = async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(400).json({status: "fail", data: error.message})
     }
 }
 //Update End
@@ -96,19 +88,73 @@ exports.EmailVerify = async (req, res)=>{
         let otp = Math.floor(100000 + Math.random() * 900000)
         const user = await UserModel.findOne(query)
         if(!user){
-            res.status(400).json({status: "fail", message: "User not found"})
+        res.status(400).json({status: "fail", data: "User not found"})
         }
        else{
         //Step 1
         let creatOtp = await OtpModel.create({email:email, otp:otp})
         //Step 2
         let sendEmail = SendEmailUtility(email,"To-Do_Lister Password Verification", `Your OTP is ${otp}`)
-        res.status(200).json({status:"Sucess", mesage: "OTP send successfully"})
+        res.status(200).json({status:"Sucess", data: "OTP send successfully"})
        }
 
 
     } catch (error) {
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(400).json({status: "fail", data: error.message})
     }
 }
 //Email Verify End
+
+//OTP verify Start
+exports.OtpVerify = async (req, res) => {
+    try {
+        const email = req.params.email;
+        const otp = req.params.otp;
+        const status = 0;
+        const updateStatus = 1;
+
+        const otpCheck = await OtpModel.countDocuments({ email: email, otp: otp });
+
+        if (otpCheck > 0) {
+            const updateOtp = await OtpModel.updateOne(
+                { email: email, otp: otp, status: status },
+                { $set: { status: updateStatus } }
+            );
+
+            res.status(200).json({ status: "success", data: "OTP verified successfully" });
+        } else {
+            res.status(400).json({ status: "fail", data: "Invalid OTP" });
+        }
+
+    } catch (error) {
+        res.status(400).json({ status: "fail", data: error.message });
+    }
+};
+//OTP verify End
+
+//Rest pass Start
+exports.ResetPassword = async (req, res)=>{
+    try {
+       let email = req.body.email
+       let otp = req.body.otp
+       let updatePassword = req.body.password
+        let updateStatus = 1
+
+        let otpCheck = await OtpModel.aggregate([
+            {$match: {email:email, otp: otp, status: updateStatus}},
+            {$count: "total"}
+        ])
+        if(otpCheck.length>0){
+            let passwordUpdate = await UserModel.updateOne({email:email},{password:updatePassword})
+            res.status(200).json({ status: "success", data: "Password Updated successfully" });
+        }
+        else{
+
+            res.status(400).json({ status: "fail", data: "Invalide OTP"});
+        }
+
+    } catch (error) {
+        res.status(400).json({ status: "fail", data: error.message });
+    }
+}
+//Rest pass End
