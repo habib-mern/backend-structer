@@ -10,12 +10,12 @@ exports.Registraion = async (req, res) => {
         const reqBody = req.body;
         const user = await UserModel.create(reqBody);
         res
-            .status(201)
+            .status(200)
             .json({status: "sucess", data: user})
 
     } catch (error) {
         res
-            .status(400)
+            .status(200)
             .json({status: "fail", message: error.message})
     }
 }
