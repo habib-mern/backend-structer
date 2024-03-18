@@ -27,11 +27,11 @@ exports.Login = async (req, res) => {
         const reqBody = req.body;
         let user = await UserModel.findOne({email: reqBody.email});
         if (!user) {
-            return res.status(400).json({status: "fail", data: "User not found"})
+            return res.status(200).json({status: "fail", data: "User not found"})
         }
         if (user.password !== reqBody.password) {
 
-            return res.status(400).json({status: "fail", data: "Invalide Password"})
+            return res.status(200).json({status: "fail", data: "Invalide Password"})
         } else {
 
             let payload = {
@@ -41,10 +41,10 @@ exports.Login = async (req, res) => {
             let token = jwt.sign(payload, '12345')
             //Projection
             const responseData = {email:user['email'], firstName:user['firstName'], lastName: user['lastName'], profilePicture: user['profilePicture']}
-            res.status(201).json({status: "sucess", data: responseData, token: token})
+            res.status(200).json({status: "sucess", data: responseData, token: token})
         }
     } catch (error) {
-        res.status(400).json({status: "fail", data: error.message})
+        res.status(200).json({status: "fail", data: error.message})
     }
 }
 //Login End
@@ -59,7 +59,7 @@ exports.ProfileInfo = async(req, res)=>{
         res.status(200).json({status:"Sucess", data: responseData})
 
     } catch (error) {
-        res.status(400).json({status: "fail", data: error.message})
+        res.status(200).json({status: "fail", data: error.message})
     }
 }
 //Profile Info End
@@ -75,7 +75,7 @@ exports.UpdateProfile = async (req, res) => {
 
 
     } catch (error) {
-        res.status(400).json({status: "fail", data: error.message})
+        res.status(200).json({status: "fail", data: error.message})
     }
 }
 //Update End
@@ -88,7 +88,7 @@ exports.EmailVerify = async (req, res)=>{
         let otp = Math.floor(100000 + Math.random() * 900000)
         const user = await UserModel.findOne(query)
         if(!user){
-        res.status(400).json({status: "fail", data: "User not found"})
+        res.status(200).json({status: "fail", data: "User not found"})
         }
        else{
         //Step 1
@@ -100,7 +100,7 @@ exports.EmailVerify = async (req, res)=>{
 
 
     } catch (error) {
-        res.status(400).json({status: "fail", data: error.message})
+        res.status(200).json({status: "fail", data: error.message})
     }
 }
 //Email Verify End
@@ -123,11 +123,11 @@ exports.OtpVerify = async (req, res) => {
 
             res.status(200).json({ status: "success", data: "OTP verified successfully" });
         } else {
-            res.status(400).json({ status: "fail", data: "Invalid OTP" });
+            res.status(200).json({ status: "fail", data: "Invalid OTP" });
         }
 
     } catch (error) {
-        res.status(400).json({ status: "fail", data: error.message });
+        res.status(200).json({ status: "fail", data: error.message });
     }
 };
 //OTP verify End
@@ -150,11 +150,11 @@ exports.ResetPassword = async (req, res)=>{
         }
         else{
 
-            res.status(400).json({ status: "fail", data: "Invalide OTP"});
+            res.status(200).json({ status: "fail", data: "Invalide OTP"});
         }
 
     } catch (error) {
-        res.status(400).json({ status: "fail", data: error.message });
+        res.status(200).json({ status: "fail", data: error.message });
     }
 }
 //Rest pass End
