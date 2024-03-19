@@ -6,7 +6,7 @@ const AuthVerifyMiddleware = require('../middleware/AuthVerifyMiddleware')
 
 //User Api Start
 router.post('/registraion', userController.Registraion)
-router.get('/login', userController.Login)
+router.post('/login', userController.Login)
 router.post('/user-profile-update',AuthVerifyMiddleware, userController.UpdateProfile)
 router.get('/profile-info',AuthVerifyMiddleware, userController.ProfileInfo)
 //OTP Api
