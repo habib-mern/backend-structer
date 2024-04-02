@@ -8,12 +8,12 @@ exports.CreateTodo = async (req, res) => {
         reqBody.email = req.headers.email
         const todo = await TodoModel.create(reqBody);
         res
-            .status(201)
+            .status(200)
             .json({status: "sucess", data: todo})
 
     } catch (error) {
         res
-            .status(400)
+            .status(200)
             .json({status: "fail", message: error.message})
     }
 }
@@ -26,10 +26,10 @@ exports.UpdateTodoStatus = async(req,res)=>{
         let status = req.params.status
         let query = {_id: id}
         const todo = await TodoModel.updateOne(query, {status: status})
-        res.status(201).json({status: "sucess", data: todo})
+        res.status(200).json({status: "sucess", data: todo})
     }
     catch(error){
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(200).json({status: "fail", message: error.message})
     }
 } 
 //Update ToDo End
@@ -40,10 +40,10 @@ exports.DeleteTodo = async(req,res)=>{
         let id = req.params.id
         let query = {_id: id}
         const todo = await TodoModel.deleteOne(query)
-        res.status(201).json({status: "sucess", data: todo})
+        res.status(200).json({status: "sucess", data: todo})
     }
     catch(error){
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(200).json({status: "fail", message: error.message})
     }
 } 
 //Delete ToDo End
@@ -61,10 +61,10 @@ exports.TodoListByStatus = async(req, res) =>{
             ]
         )
 
-        res.status(201).json({status: "sucess", data: result})
+        res.status(200).json({status: "sucess", data: result})
     }
     catch(error){
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(200).json({status: "fail", message: error.message})
     }
 }
 //todo list by status End
@@ -81,10 +81,10 @@ exports.TodoCountByStatus = async(req,res)=>{
             ]
         )
 
-        res.status(201).json({status: "sucess", data: result})
+        res.status(200).json({status: "sucess", data: result})
     }
     catch(error){
-        res.status(400).json({status: "fail", message: error.message})
+        res.status(200).json({status: "fail", message: error.message})
     }
 }
 //todo count End
